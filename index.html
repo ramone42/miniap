@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S Coin - O'yin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #ff6600, #ffcc00);
+            font-family: 'Arial', sans-serif;
+            color: white;
+            text-align: center;
+            padding: 50px 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .coin-button {
+            padding: 40px 60px;
+            font-size: 36px;
+            border: none;
+            border-radius: 50%;
+            background-color: #ff4d4d;
+            box-shadow: 0 10px 20px rgba(255, 77, 77, 0.4);
+            color: white;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+            margin: 20px;
+            width: 180px;
+            height: 180px;
+            position: relative;
+        }
+
+        .coin-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .coin-count {
+            font-size: 40px;
+            font-weight: bold;
+            margin-top: 30px;
+            color: #fff;
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        /* Mobil qurilmalarga moslashish */
+        @media (max-width: 576px) {
+            .coin-button {
+                width: 150px;
+                height: 150px;
+                font-size: 30px;
+                padding: 30px;
+            }
+
+            .title {
+                font-size: 36px;
+            }
+        }
+
+        .coin {
+            position: absolute;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            background-color: gold;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            animation: coinFall 1s forwards, coinGlow 1s infinite alternate;
+            opacity: 1;
+        }
+
+        @keyframes coinFall {
+            0% {
+                opacity: 1;
+                transform: scale(1) translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0) translateY(200px) rotate(720deg);
+            }
+        }
+
+        @keyframes coinGlow {
+            0% {
+                box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 30px rgba(255, 215, 0, 1.2);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="title">S Coin O'yini</div>
+    <p>Hozirda sizning tangalaringiz: <span id="coin-count" class="coin-count">0</span></p>
+    
+    <button class="coin-button" onclick="collectCoin()">S Coin</button>
+
+    <script>
+        let coinCount = 0;
+
+        function collectCoin() {
+            // Tanganing yig‘ilishi va animatsiya qo‘shish
+            coinCount += 1;
+            document.getElementById("coin-count").textContent = coinCount;
+
+            // Tanganing sochilishi animatsiyasi
+            let coin = document.createElement('div');
+            coin.classList.add('coin');
+            document.body.appendChild(coin);
+            
+            // Tasodifiy joylashuvni tanlash
+            let buttonRect = document.querySelector('.coin-button').getBoundingClientRect();
+            let buttonCenterX = buttonRect.left + buttonRect.width / 2;
+            let buttonCenterY = buttonRect.top + buttonRect.height / 2;
+
+            coin.style.left = buttonCenterX + 'px';
+            coin.style.top = buttonCenterY + 'px';
+
+            // Tanganing sochilish yo‘nalishini tasodifiy belgilash
+            let angle = Math.random() * 360;
+            let distance = Math.random() * 150 + 50;
+            let x = buttonCenterX + distance * Math.cos(angle);
+            let y = buttonCenterY + distance * Math.sin(angle);
+
+            // Tanganing sochilishini boshqarish
+            coin.style.transition = 'transform 1s ease-out';
+            setTimeout(() => {
+                coin.style.transform = `translate(${x - buttonCenterX}px, ${y - buttonCenterY}px)`;
+            }, 0);
+
+            // Animatsiya tugagandan so‘ng tangani o‘chirish
+            setTimeout(() => {
+                coin.remove();
+            }, 1000);
+            
+            sendToBot("coin_collect", 1);  // Telegram botga ma'lumot yuborish
+        }
+
+        function sendToBot(action, amount) {
+            // Telegram botga ma'lumot yuborish (AJAX yoki Web App API)
+            // Bu yerda botga HTTP so'rovi yoki Telegram Web App API orqali yuborish amalga oshiriladi
+        }
+    </script>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        Telegram.WebApp.init();
+    </script>
+
+</body>
+</html>
